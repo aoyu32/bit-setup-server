@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: bit-setup-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/bit_setup?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    username: root
+    password: aoyu
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+knife4j:
+  enable: true
+springdoc:
+  api-docs:
+    enabled: true  # 启用 API 文档
+  swagger-ui:
+    enabled: true  # 启用 Swagger UI
