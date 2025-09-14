@@ -24,7 +24,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mybatis-plus.verison>3.5.2</mybatis-plus.verison>
+        <mybatis-plus.version>3.5.7</mybatis-plus.version>
         <mysql.version>8.0.30</mysql.version>
         <druid.version>1.2.16</druid.version>
         <lombok.version>1.18.30</lombok.version>
@@ -47,10 +47,12 @@
                 <version>${mysql.version}</version>
             </dependency>
 
+
+            <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-spring-boot3-starter -->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.verison}</version>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
 
             <dependency>
@@ -59,12 +61,7 @@
                 <version>${druid.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
+
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>

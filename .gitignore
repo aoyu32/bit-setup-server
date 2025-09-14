@@ -1,0 +1,49 @@
+# 忽略所有以 .class 结尾的编译后的类文件
+*.class
+
+# 忽略Maven的target目录和Gradle的build目录
+target/
+build/
+out/
+bin/
+
+# 忽略IntelliJ IDEA的配置文件
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# 忽略Eclipse的配置文件
+.settings/
+.project
+.classpath
+
+
+# 忽略临时文件
+*.tmp
+*.temp
+
+# 忽略Maven的打包文件
+*.jar
+*.war
+*.ear
+
+# 忽略系统属性文件
+*.sysprep
+
+# 忽略测试报告 (可选)
+test-output/
+test-results/
+
+# 忽略环境配置文件 (如.env) - 通常包含敏感信息
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 忽略CI/CD相关文件 (可选)
+.gitlab-ci.yml
+.jenkins/
+.travis.yml
+.circleci/

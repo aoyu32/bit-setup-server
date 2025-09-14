@@ -4,14 +4,23 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/bit_setup?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/bit_setup_server?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
     username: root
     password: aoyu
+  devtools:
+    restart:
+      enabled: true
 
 mybatis-plus:
-  mapper-locations: classpath*:/mapper/**/*.xml
+  mapper-locations: classpath*:/com/aoyu/bitsetup/client/mapper/**/*.xml
+  type-aliases-package: com.aoyu.bitsetup.model
   configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: assign_id  # 使用雪花算法ID
+
 
 knife4j:
   enable: true
