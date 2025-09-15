@@ -1,6 +1,9 @@
 package com.aoyu.bitsetup.client.service.app;
 
+import com.aoyu.bitsetup.model.dto.PageResultDTO;
+import com.aoyu.bitsetup.model.dto.app.AppInfoDto;
 import com.aoyu.bitsetup.model.dto.app.AppRankingListDto;
+import com.aoyu.bitsetup.model.query.AppQuery;
 
 import java.util.List;
 
@@ -41,4 +44,14 @@ public interface AppService {
      * @return: 必备应用列表
      */
     List<AppRankingListDto> getEssentialList();
+
+    /**
+     * @description: 分页查询应用信息
+     * @author: aoyu
+     * @date: 2025/9/15 下午2:56
+     * @param: 查询条件
+     * @return: 分页查询结果
+     */
+    PageResultDTO<AppInfoDto> getAppInfoPage(AppQuery appQuery);
+
 }

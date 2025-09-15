@@ -1,4 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.aoyu.bitsetup.client.mapper.app.AppMapper">
+
+    <!-- 应用信息查询字段 -->
+    <sql id="appInfoColumns">
+        a.id,
+        a.app_name as appName,
+        a.icon_url as iconUrl,
+        a.rating,
+        a.brief,
+        a.is_personal_develop as isPersonalDevelop,
+        a.points_required as pointsRequired,
+        a.is_new as isNew,
+        a.is_cracked as isCracked,
+        c.category_name as category,
+        <!-- 下载量统计 -->
+        (SELECT COUNT(*)
+        FROM app_download_record adr
+        WHERE adr.download_link_id IN (
+        SELECT av.id
+        FROM app_version av
+        WHERE av.app_id = a.id
+        )) as downloadCount
+    </sql>
+
+<!--    分页查询应用信息-->
+    <select id="selectAppInfoPage" resultType="com.aoyu.bitsetup.model.dto.app.AppInfoDto">
+        SELECT
+        <include refid="appInfoColumns"/>
+        FROM app a
+        LEFT JOIN app_category c ON a.category_id = c.id
+        WHERE a.status = 1
+    </select>
+
+
 </mapper>

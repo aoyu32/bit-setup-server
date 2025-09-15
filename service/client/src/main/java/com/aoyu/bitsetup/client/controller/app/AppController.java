@@ -2,13 +2,17 @@ package com.aoyu.bitsetup.client.controller.app;
 
 import com.aoyu.bitsetup.client.service.app.AppService;
 import com.aoyu.bitsetup.common.result.Result;
+import com.aoyu.bitsetup.model.dto.PageResultDTO;
+import com.aoyu.bitsetup.model.dto.app.AppInfoDto;
 import com.aoyu.bitsetup.model.dto.app.AppRankingListDto;
+import com.aoyu.bitsetup.model.query.AppQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -71,6 +75,23 @@ public class AppController {
         return Result.success(essentialList);
     }
 
+
+    /**
+     * @description: 分页获取应用列表
+     * @author: aoyu
+     * @date: 2025/9/15 下午11:25
+     * @param: 页码，每页条数
+     * @return: 分页应用列表
+     */
+    @Operation(description = "分页获取应用列表")
+    @GetMapping("/page")
+    public Result<PageResultDTO<AppInfoDto>> getAppInfoPage(@RequestParam Integer pageNum,@RequestParam Integer pageSize){
+        AppQuery appQuery = new AppQuery();
+        appQuery.setPageNum(pageNum);
+        appQuery.setPageSize(pageSize);
+        PageResultDTO<AppInfoDto> appInfoPage = appService.getAppInfoPage(appQuery);
+        return Result.success(appInfoPage);
+    }
 
 
 

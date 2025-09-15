@@ -2,9 +2,15 @@ package com.aoyu.bitsetup.client.service.app.impl;
 
 import com.aoyu.bitsetup.client.mapper.app.AppMapper;
 import com.aoyu.bitsetup.client.service.app.AppService;
+import com.aoyu.bitsetup.model.dto.PageResultDTO;
+import com.aoyu.bitsetup.model.dto.app.AppInfoDto;
 import com.aoyu.bitsetup.model.dto.app.AppRankingListDto;
 import com.aoyu.bitsetup.model.entity.app.App;
+import com.aoyu.bitsetup.model.query.AppQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +26,7 @@ import java.util.stream.Collectors;
  */
 
 @Service
+@Slf4j
 public class AppServiceImpl implements AppService {
 
     @Autowired
@@ -83,6 +90,22 @@ public class AppServiceImpl implements AppService {
             BeanUtils.copyProperties(app, appRankingListDto);
             return appRankingListDto;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public PageResultDTO<AppInfoDto> getAppInfoPage(AppQuery appQuery) {
+        // 创建分页对象
+        Page<AppInfoDto> page = new Page<>(appQuery.getPageNum(), appQuery.getPageSize());
+        IPage<AppInfoDto> appInfoDtoIPage = appMapper.selectAppInfoPage(page);
+        log.info("分页结果：总页数：{}，每页条数：{}，总条数：{}，记录：{}，"
+                ,appInfoDtoIPage.getPages(),appInfoDtoIPage.getSize(),appInfoDtoIPage.getTotal(),appInfoDtoIPage.getRecords());
+        PageResultDTO<AppInfoDto> pageResultDTO = new PageResultDTO<>();
+        pageResultDTO.setPageNum(appQuery.getPageNum());
+        pageResultDTO.setPageSize(appQuery.getPageSize());
+        pageResultDTO.setPages(appInfoDtoIPage.getPages());
+        pageResultDTO.setTotal(appInfoDtoIPage.getTotal());
+        pageResultDTO.setList(appInfoDtoIPage.getRecords());
+        return pageResultDTO;
     }
 
 }
