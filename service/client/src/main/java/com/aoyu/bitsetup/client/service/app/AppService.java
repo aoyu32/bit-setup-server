@@ -4,6 +4,8 @@ import com.aoyu.bitsetup.model.dto.PageResultDTO;
 import com.aoyu.bitsetup.model.dto.app.AppInfoDto;
 import com.aoyu.bitsetup.model.dto.app.AppRankingListDto;
 import com.aoyu.bitsetup.model.query.AppQuery;
+import com.aoyu.bitsetup.model.query.PageQuery;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
 
@@ -52,6 +54,7 @@ public interface AppService {
      * @param: 查询条件
      * @return: 分页查询结果
      */
-    PageResultDTO<AppInfoDto> getAppInfoPage(AppQuery appQuery);
+    PageResultDTO<AppInfoDto> getAppInfoPage(PageQuery pageQuery);
+
 
 }

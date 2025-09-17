@@ -7,6 +7,7 @@ import com.aoyu.bitsetup.model.dto.app.AppInfoDto;
 import com.aoyu.bitsetup.model.dto.app.AppRankingListDto;
 import com.aoyu.bitsetup.model.entity.app.App;
 import com.aoyu.bitsetup.model.query.AppQuery;
+import com.aoyu.bitsetup.model.query.PageQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -93,15 +94,15 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public PageResultDTO<AppInfoDto> getAppInfoPage(AppQuery appQuery) {
+    public PageResultDTO<AppInfoDto> getAppInfoPage(PageQuery pageQuery) {
         // 创建分页对象
-        Page<AppInfoDto> page = new Page<>(appQuery.getPageNum(), appQuery.getPageSize());
+        Page<AppInfoDto> page = new Page<>(pageQuery.getPageNum(), pageQuery.getPageSize());
         IPage<AppInfoDto> appInfoDtoIPage = appMapper.selectAppInfoPage(page);
         log.info("分页结果：总页数：{}，每页条数：{}，总条数：{}，记录：{}，"
                 ,appInfoDtoIPage.getPages(),appInfoDtoIPage.getSize(),appInfoDtoIPage.getTotal(),appInfoDtoIPage.getRecords());
         PageResultDTO<AppInfoDto> pageResultDTO = new PageResultDTO<>();
-        pageResultDTO.setPageNum(appQuery.getPageNum());
-        pageResultDTO.setPageSize(appQuery.getPageSize());
+        pageResultDTO.setPageNum(pageQuery.getPageNum());
+        pageResultDTO.setPageSize(pageQuery.getPageSize());
         pageResultDTO.setPages(appInfoDtoIPage.getPages());
         pageResultDTO.setTotal(appInfoDtoIPage.getTotal());
         pageResultDTO.setList(appInfoDtoIPage.getRecords());

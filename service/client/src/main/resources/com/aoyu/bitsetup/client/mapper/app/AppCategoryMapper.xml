@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aoyu.bitsetup.client.mapper.app.AppCategoryMapper">
+
+    <!-- 应用信息查询字段 -->
+    <sql id="appInfoColumns">
+        a.id,
+        a.app_name as appName,
+        a.icon_url as iconUrl,
+        a.rating,
+        a.brief,
+        a.is_personal_develop as isPersonalDevelop,
+        a.points_required as pointsRequired,
+        a.is_new as isNew,
+        a.is_cracked as isCracked,
+        ac.category_name as category,
+        (SELECT COUNT(*)
+         FROM app_download_record adr
+         JOIN app_download_link adl ON adr.download_link_id = adl.id
+         JOIN app_version av ON adl.version_id = av.id
+         WHERE av.app_id = a.id AND adr.is_deleted = 0 AND adr.download_status = 1) as downloadCount
+    </sql>
+
+    <!-- 根据过滤参数条件查询应用信息 -->
+    <select id="selectAppByFilter" resultType="com.aoyu.bitsetup.model.dto.app.AppInfoDto">
+        SELECT
+        DISTINCT
+        <include refid="appInfoColumns"/>
+        FROM app a
+        LEFT JOIN app_category ac ON a.category_id = ac.id
+        INNER JOIN app_platform_relation apr ON a.id = apr.app_id
+        INNER JOIN app_platform ap ON apr.platform_id = ap.id
+        <where>
+            a.status = 1
+            <!-- 父级分类ID条件 -->
+            <choose>
+                <when test="query.fatherCategoryId != null and query.childCategoryId == null">
+                    AND a.category_id IN
+                    (SELECT id FROM app_category WHERE parent_id = #{query.fatherCategoryId} AND is_visible = 1)
+                </when>
+                <when test="query.fatherCategoryId == null and query.childCategoryId != null">
+                    AND a.category_id = #{query.childCategoryId}
+                </when>
+            </choose>
+            <!-- 评分范围条件 -->
+            <choose>
+                <when test="query.minRating != null and query.maxRating != null">
+                    AND a.rating BETWEEN #{query.minRating} AND #{query.maxRating}
+                </when>
+                <when test="query.minRating != null">
+                    AND a.rating >= #{query.minRating}
+                </when>
+                <when test="query.maxRating != null">
+                    AND a.rating &lt; #{query.maxRating}
+                </when>
+            </choose>
+            <!-- 定价模型条件 -->
+            <if test="query.pricingModel != null and query.pricingModel != ''">
+                AND a.pricing_model = #{query.pricingModel}
+            </if>
+            <!-- 应用大小范围条件 -->
+            <choose>
+                <when test="query.minSize != null and query.maxSize != null">
+                    AND a.size BETWEEN #{query.minSize} AND #{query.maxSize}
+                </when>
+                <when test="query.minSize != null">
+                    AND a.size >= #{query.minSize}
+                </when>
+                <when test="query.maxSize != null">
+                    AND a.size &lt; #{query.maxSize}
+                </when>
+            </choose>
+            <!-- 内存使用量范围条件 -->
+            <choose>
+                <when test="query.minMemory != null and query.maxMemory != null">
+                    AND a.memory_usage BETWEEN #{query.minMemory} AND #{query.maxMemory}
+                </when>
+                <when test="query.minMemory != null">
+                    AND a.memory_usage >= #{query.minMemory}
+                </when>
+                <when test="query.maxMemory != null">
+                    AND a.memory_usage &lt; #{query.maxMemory}
+                </when>
+            </choose>
+            <!-- 是否个人开发条件 -->
+            <if test="query.isPersonalDevelop != null">
+                AND a.is_personal_develop = #{query.isPersonalDevelop}
+            </if>
+            <!-- 是否热门条件 -->
+            <if test="query.isHot != null">
+                AND a.is_hot = #{query.isHot}
+            </if>
+            <!-- 是否推荐条件 -->
+            <if test="query.isRecommend != null">
+                AND a.is_recommend = #{query.isRecommend}
+            </if>
+            <!-- 是否必备条件 -->
+            <if test="query.isEssential != null">
+                AND a.is_essential = #{query.isEssential}
+            </if>
+            <!-- 是否新品条件 -->
+            <if test="query.isNew != null">
+                AND a.is_new = #{query.isNew}
+            </if>
+            <!-- 来源地区条件 -->
+            <if test="query.originRegion != null and query.originRegion != ''">
+                AND a.origin_region = #{query.originRegion}
+            </if>
+            <!-- 平台名称条件 -->
+            <if test="query.platformName != null and query.platformName != ''">
+                AND ap.platform_name = #{query.platformName}
+            </if>
+            <!-- 是否已经绿色条件 -->
+            <if test="query.isCracked != null and query.isCracked != ''">
+                AND a.is_cracked = #{query.isCracked}
+            </if>
+            <choose>
+                <when test="query.points == 0 and query.points != null">
+                    And a.points_required = 0
+                </when>
+                <when test="query.points != 0 and query.points != null">
+                    And a.points_required != 0
+                </when>
+            </choose>
+            <!-- 安装器条件 -->
+            <if test="query.installer != null and query.installer != ''">
+                AND EXISTS (
+                SELECT 1
+                FROM app_version av
+                JOIN app_download_link adl ON adl.version_id = av.id
+                WHERE av.app_id = a.id AND adl.file_type = #{query.installer}
+                )
+            </if>
+            <!-- 下载量条件 -->
+            <choose>
+                <when test="query.minDownload != null and query.maxDownload != null">
+                    AND (
+                    SELECT COUNT(*)
+                    FROM app_download_record adr
+                    JOIN app_download_link adl ON adr.download_link_id = adl.id
+                    JOIN app_version av ON adl.version_id = av.id
+                    WHERE av.app_id = a.id AND adr.is_deleted = 0 AND adr.download_status = 1
+                    ) BETWEEN #{query.minDownload} AND #{query.maxDownload}
+                </when>
+                <when test="query.minDownload != null">
+                    AND (
+                    SELECT COUNT(*)
+                    FROM app_download_record adr
+                    JOIN app_download_link adl ON adr.download_link_id = adl.id
+                    JOIN app_version av ON adl.version_id = av.id
+                    WHERE av.app_id = a.id AND adr.is_deleted = 0 AND adr.download_status = 1
+                    ) >= #{query.minDownload}
+                </when>
+                <when test="query.maxDownload != null">
+                    AND (
+                    SELECT COUNT(*)
+                    FROM app_download_record adr
+                    JOIN app_download_link adl ON adr.download_link_id = adl.id
+                    JOIN app_version av ON adl.version_id = av.id
+                    WHERE av.app_id = a.id AND adr.is_deleted = 0 AND adr.download_status = 1
+                    ) &lt; #{query.maxDownload}
+                </when>
+            </choose>
+        </where>
+    </select>
+</mapper>
