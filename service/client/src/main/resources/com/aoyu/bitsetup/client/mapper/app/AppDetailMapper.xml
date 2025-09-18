@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aoyu.bitsetup.client.mapper.app.AppDetailMapper">
+
+    <!-- 应用详情字段 -->
+    <sql id="appDetailColumns">
+        a.id as appId,
+        a.app_name as appName,
+        av.version as appVersion,
+        a.icon_url as iconUrl,
+        -- 一级分类（父分类）
+        CASE
+            WHEN ac.level = 1 THEN ac.category_name
+            ELSE pc.category_name
+        END as parentCategory,
+        -- 二级分类（子分类）
+        CASE
+            WHEN ac.level = 2 THEN ac.category_name
+            ELSE NULL
+        END as childCategory,
+        a.size,
+        a.points_required as points,
+        a.pricing_model as pricingModel,
+        a.developer,
+        a.rating,
+        a.create_time as createTime,
+        a.official_website as officialWebsite,
+        a.introduction as introductionText,
+        a.installation_guide as installGuide
+    </sql>
+
+    <!-- 根据ID查询应用详情 -->
+    <select id="selectAppDetailById"
+            parameterType="long"
+            resultType="com.aoyu.bitsetup.model.dto.app.AppDetailInfoDTO">
+        SELECT
+        <include refid="appDetailColumns"/>,
+        -- 子查询获取评论数
+        (SELECT COUNT(*)
+        FROM app_comment ac2
+        WHERE ac2.app_id = a.id AND ac2.status = 2) as commentCount,
+        -- 子查询获取下载次数
+        (SELECT COUNT(*)
+        FROM app_download_record adr
+        JOIN app_version av2 ON adr.version_id = av2.id
+        WHERE av2.app_id = a.id AND adr.download_status = 1 AND adr.is_deleted = 0) as downloadCount,
+        -- 子查询获取收藏数（如果有收藏表的话）
+        0 as collectCount,
+        -- 子查询获取主要下载链接
+        (SELECT adl.link_url
+        FROM app_version av3
+        JOIN app_download_link adl ON av3.id = adl.version_id
+        WHERE av3.app_id = a.id
+        AND av3.is_latest = 1
+        AND av3.status = 1
+        AND adl.is_primary = 1
+        AND adl.status = 1
+        LIMIT 1) as downloadUrl
+        FROM app a
+        LEFT JOIN app_category ac ON a.category_id = ac.id
+        LEFT JOIN app_category pc ON ac.parent_id = pc.id AND ac.level = 2
+        LEFT JOIN app_version av ON a.id = av.app_id AND av.is_latest = 1
+        WHERE a.id = #{appId} AND a.status = 1
+    </select>
+
+    <!-- 根据应用ID查询平台列表 -->
+    <select id="selectPlatformsByAppId"
+            parameterType="long"
+            resultType="java.lang.String">
+        SELECT ap.platform_name
+        FROM app_platform_relation apr
+                 JOIN app_platform ap ON apr.platform_id = ap.id
+        WHERE apr.app_id = #{appId} AND ap.is_active = 1
+        ORDER BY apr.is_primary DESC, ap.sort_order ASC
+    </select>
+
+    <!-- 根据应用ID查询标签列表 -->
+    <select id="selectTagsByAppId"
+            parameterType="long"
+            resultType="java.lang.String">
+        SELECT at.tag_name
+        FROM app_tag_relation atr
+                 JOIN app_tag at ON atr.tag_id = at.id
+        WHERE atr.app_id = #{appId} AND atr.is_active = 1 AND at.is_visible = 1
+        ORDER BY at.sort_order ASC
+    </select>
+
+    <!-- 根据应用ID查询截图列表 -->
+    <select id="selectScreenshotsByAppId"
+            parameterType="long"
+            resultType="java.lang.String">
+        SELECT image_url
+        FROM app_screenshot
+        WHERE app_id = #{appId} AND is_deleted = 0
+        ORDER BY sort_order ASC
+    </select>
+
+    <select id="selectVersionByAppId" resultType="com.aoyu.bitsetup.model.dto.app.AppVersionDTO">
+        SELECT av.id,
+               av.version,
+               av.release_notes,
+               av.release_date,
+               adl.file_size AS size,
+               adl.link_url AS downloadUrl,
+               CONCAT(FORMAT(adl.download_count, 0)) AS downloadCount
+        FROM app_version av
+            LEFT JOIN app_download_link adl
+        ON av.id = adl.version_id
+            AND adl.is_primary = 1
+            AND adl.status = 1
+        WHERE av.app_id = #{appId}
+          AND av.status = 1
+          AND av.is_latest != 1
+
+        ORDER BY av.release_date DESC, av.create_time DESC;
+    </select>
+
+    <select id="selectRelated" resultType="com.aoyu.bitsetup.model.dto.app.AppRelatedDTO">
+        SELECT a.id AS appId,
+               a.app_name,
+               a.icon_url,
+               a.size,
+               CONCAT(FORMAT(IFNULL(adl.download_count, 0), 0)) AS downloadCount
+        FROM app a
+                 LEFT JOIN (
+            SELECT adr.version_id, COUNT(*) AS download_count
+            FROM app_download_record adr
+            WHERE adr.is_deleted = 0
+            GROUP BY adr.version_id
+        ) adl ON a.id = adl.version_id
+        WHERE a.status = 1
+          AND a.category_id = (SELECT category_id FROM app WHERE id = #{appId})
+          AND a.id != #{appId}
+        LIMIT 5;
+    </select>
+
+    <select id="selectGuessLike" resultType="com.aoyu.bitsetup.model.dto.app.AppGuessLikeDTO">
+        SELECT a.id            AS appId,
+               a.app_name      AS appName,
+               a.icon_url      AS iconUrl,
+               c.category_name AS category
+        FROM app a
+                 LEFT JOIN app_category c ON a.category_id = c.id
+        WHERE a.status = 1
+        ORDER BY RAND()
+            LIMIT 5;
+
+    </select>
+
+</mapper>

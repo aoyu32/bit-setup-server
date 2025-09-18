@@ -89,8 +89,8 @@ public class AppCategoryServiceImpl implements AppCategoryService {
                 appInfoDtoIPage.getRecords());
 
         return new PageResultDTO<>(
-                appInfoDtoIPage.getPages(),
                 appInfoDtoIPage.getTotal(),
+                appInfoDtoIPage.getPages(),
                 appQuery.getPageNum(),
                 appQuery.getPageSize(),
                 appInfoDtoIPage.getRecords()
