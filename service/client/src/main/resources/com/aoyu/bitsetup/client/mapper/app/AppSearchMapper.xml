@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aoyu.bitsetup.client.mapper.app.AppSearchMapper">
+
+    <!-- 应用信息查询字段 -->
+    <sql id="appInfoColumns">
+        a.id,
+        a.app_name as appName,
+        a.icon_url as iconUrl,
+        a.rating,
+        a.brief,
+        a.is_personal_develop as isPersonalDevelop,
+        a.points_required as pointsRequired,
+        a.is_new as isNew,
+        a.is_cracked as isCracked,
+        ac.category_name as category,
+        (SELECT COUNT(*)
+         FROM app_download_record adr
+         JOIN app_download_link adl ON adr.download_link_id = adl.id
+         JOIN app_version av ON adl.version_id = av.id
+         WHERE av.app_id = a.id AND adr.is_deleted = 0 AND adr.download_status = 1) as downloadCount,
+        (SELECT COUNT(*)
+         FROM app_comment acc
+         WHERE acc.app_id = a.id AND acc.status = 2) as commentCount,
+        (SELECT COUNT(*)
+         FROM app_collect acol
+         WHERE acol.app_id = a.id AND acol.is_deleted = 0) as collectCount
+    </sql>
+
+    <select id="selectAppBySearch" resultType="com.aoyu.bitsetup.model.dto.app.AppInfoDto">
+        SELECT
+        <include refid="appInfoColumns"/>
+        FROM app a
+        LEFT JOIN app_category ac ON a.category_id = ac.id
+
+        <where>
+            a.status = 1
+            <if test="search.keyword != null and search.keyword.trim() != ''">
+                AND (
+                a.app_name LIKE CONCAT('%', #{search.keyword}, '%')
+                OR a.brief LIKE CONCAT('%', #{search.keyword}, '%')
+                OR a.developer LIKE CONCAT('%', #{search.keyword}, '%')
+                )
+            </if>
+            <if test="search.minSize != null and search.minSize > 0">
+                AND a.size >= #{search.minSize}
+            </if>
+            <if test="search.maxSize != null and search.maxSize > 0">
+                AND a.size &lt;= #{search.maxSize}
+            </if>
+            <if test="search.pricingModel != null and search.pricingModel.trim() != ''">
+                AND a.pricing_model = #{search.pricingModel}
+            </if>
+        </where>
+
+        <!-- 排序逻辑 -->
+        <choose>
+            <when test="search.sortBy != null and search.sortBy.trim() != ''">
+                ORDER BY
+                <choose>
+                    <when test="search.sortBy == 'rating'">
+                        a.rating
+                    </when>
+                    <when test="search.sortBy == 'download_count'">
+                        downloadCount
+                    </when>
+                    <when test="search.sortBy == 'update_time'">
+                        a.update_time
+                    </when>
+                    <when test="search.sortBy == 'create_time'">
+                        a.create_time
+                    </when>
+                    <when test="search.sortBy == 'size'">
+                        a.size
+                    </when>
+                    <when test="search.sortBy == 'points_required'">
+                        a.points_required
+                    </when>
+                    <otherwise>
+                        a.create_time
+                    </otherwise>
+                </choose>
+                <choose>
+                    <when test="search.isAsc != null and search.isAsc == true">
+                        ASC
+                    </when>
+                    <otherwise>
+                        DESC
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                <!-- 默认排序：推荐 > 热门 > 最新 > 创建时间倒序 -->
+                ORDER BY a.is_recommend DESC, a.is_hot DESC, a.is_new DESC, a.create_time DESC
+            </otherwise>
+        </choose>
+
+    </select>
+
+</mapper>
