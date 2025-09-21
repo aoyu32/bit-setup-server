@@ -10,6 +10,30 @@ spring:
   devtools:
     restart:
       enabled: true
+  data:
+    redis:
+      host: localhost
+      port: 6379       # Redis 端口号
+      database: 0      # 使用的数据库索引（默认是 0）
+      timeout: 2000    # 连接超时时间（毫秒）
+      lettuce:
+        pool:
+          max-active: 8   # 连接池最大连接数
+          max-idle: 8     # 连接池最大空闲连接数
+          min-idle: 0     # 连接池最小空闲连接数
+  mail:
+      host: smtp.qq.com
+      port: 587
+      username: 339983216@qq.com
+      password: whelhgjpovhqcadc
+      protocol: smtp
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
+      default-encoding: UTF-8
 
 mybatis-plus:
   mapper-locations: classpath*:/com/aoyu/bitsetup/client/mapper/**/*.xml
@@ -29,3 +53,27 @@ springdoc:
     enabled: true  # 启用 API 文档
   swagger-ui:
     enabled: true  # 启用 Swagger UI
+
+aj:
+  captcha:
+    jigsaw: classpath:images/jigsaw
+    pic-click: classpath:images/pic-click
+    cache-type: redis
+    type: default
+    water-mark: ""
+    slip-offset: 5
+    aes-status: true
+    interference-options: 2
+    history-data-clear-enable: false
+    req-frequency-limit-enable: false
+    req-get-lock-limit: 5
+    req-get-lock-seconds: 360
+    req-get-minute-limit: 30
+    req-check-minute-limit: 70
+    req-verify-minute-limit: 80
+
+
+
+jwt:
+  secret: 32565153813399832160925@bitsetupcreatebyaoyuopfdsjklsdfjsllfdjkfsdfaljhkdsfdsfsd
+  expiration: 7d

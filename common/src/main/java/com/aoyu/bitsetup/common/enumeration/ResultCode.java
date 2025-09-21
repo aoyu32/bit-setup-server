@@ -16,7 +16,12 @@ import lombok.Getter;
 public enum ResultCode {
 
     SUCCESS(200, "操作成功"),
-    ERROR(500,"操作失败");
+    ERROR(500,"操作失败"),
+    CAPTCHA_CODE_ERROR(501,"行为验证码错误"),
+    ACCOUNT_UN_EXISTS(502, "账号不存在"),
+    ACCOUNT_EXISTS(503, "账号已存在"),
+    EMAIL_CAPTCHA_ERROR(504,"邮箱验证码错误"),
+    REGISTER_ERROR(505, "注册出错");
 
     private final int code;
     private final String msg;
