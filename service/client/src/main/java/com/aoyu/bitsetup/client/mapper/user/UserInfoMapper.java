@@ -1,5 +1,6 @@
 package com.aoyu.bitsetup.client.mapper.user;
 
+import com.aoyu.bitsetup.model.dto.user.UserInfoDTO;
 import com.aoyu.bitsetup.model.entity.user.UserInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -11,4 +12,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
+
+    UserInfoDTO selectBaseInfoById(Long id);
 }

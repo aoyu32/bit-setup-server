@@ -1,18 +1,17 @@
 package com.aoyu.bitsetup.client.controller.user;
 
-import cn.hutool.core.util.RandomUtil;
-import com.aoyu.bitsetup.client.service.mail.MailService;
 import com.aoyu.bitsetup.client.service.user.UserAuthService;
-import com.aoyu.bitsetup.common.constants.UserAuthConstant;
+import com.aoyu.bitsetup.common.annotation.Auth;
 import com.aoyu.bitsetup.common.result.Result;
+import com.aoyu.bitsetup.model.vo.user.UserBaseRespVO;
+import com.aoyu.bitsetup.model.vo.user.UserLoginReqVO;
 import com.aoyu.bitsetup.model.vo.user.UserRegisterReqVO;
-import com.aoyu.bitsetup.model.vo.user.UserRegisterRespVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,21 +28,14 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserAuthController {
 
-    private final UserAuthService userAuthService;
-
-
-
-    @Autowired
-    public UserAuthController(UserAuthService userAuthService) {
-        this.userAuthService = userAuthService;
-    }
-
+    @Resource
+    private UserAuthService userAuthService;
 
     @Operation(description = "用户注册")
     @PostMapping("/register")
-    public Result<UserRegisterRespVO> register(@Valid @RequestBody UserRegisterReqVO userRegisterReqVO) {
+    public Result<UserBaseRespVO> register(@Valid @RequestBody UserRegisterReqVO userRegisterReqVO) {
         log.info("用户请求注册的数据：{}", userRegisterReqVO.toString());
-        UserRegisterRespVO registerResult = userAuthService.register(userRegisterReqVO);
+        UserBaseRespVO registerResult = userAuthService.register(userRegisterReqVO);
         log.info("返回的注册结果：{}", registerResult.toString());
         return Result.success(registerResult);
     }
@@ -55,6 +47,14 @@ public class UserAuthController {
         log.info("发送验证码给{}", email);
         userAuthService.sendCode(email);
         return Result.success();
+    }
+
+    @Operation(description = "用户登录")
+    @PostMapping("/login")
+    public Result<UserBaseRespVO> login(@RequestBody @Valid UserLoginReqVO userLoginReqVO){
+        log.info("用户登录，账号{}",userLoginReqVO.toString());
+        UserBaseRespVO loginRespVO = userAuthService.login(userLoginReqVO);
+        return Result.success(loginRespVO);
     }
 
 

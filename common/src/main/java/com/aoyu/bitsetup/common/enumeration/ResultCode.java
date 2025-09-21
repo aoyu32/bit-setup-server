@@ -21,7 +21,13 @@ public enum ResultCode {
     ACCOUNT_UN_EXISTS(502, "账号不存在"),
     ACCOUNT_EXISTS(503, "账号已存在"),
     EMAIL_CAPTCHA_ERROR(504,"邮箱验证码错误"),
-    REGISTER_ERROR(505, "注册出错");
+    REGISTER_ERROR(505, "注册出错"),
+    TOKEN_UN_VALID(506, "登录认证失败"),
+    TOKEN_EXPIRATION(507,"认证过期"),
+    PASSWORD_INVALID(508, "账号或密码错误"),
+    USER_UN_EXIST(509,"未知用户" );
+
+
 
     private final int code;
     private final String msg;

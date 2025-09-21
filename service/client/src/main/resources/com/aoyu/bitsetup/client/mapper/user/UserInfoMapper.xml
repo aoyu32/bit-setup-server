@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aoyu.bitsetup.client.mapper.user.UserInfoMapper">
+
+    <select id="selectBaseInfoById" parameterType="java.lang.Long" resultType="com.aoyu.bitsetup.model.dto.user.UserInfoDTO">
+        SELECT
+            ui.uid,
+--             ua.email,
+--             ua.phone,
+            ua.role,
+            ui.nickname,
+            ui.avatar,
+            ua.last_login_time,
+            ua.access_ip,
+--             ui.gender,
+--             ui.register_time AS registerTime,
+--             ui.bio,
+--             ui.occupation,
+--             ui.level,
+--             ui.level_title AS levelTitle,
+--             ui.is_developer AS isDeveloper,
+--             ui.experience,
+--             ui.province,
+--             ui.city,
+--             ui.county,
+            up.available_points AS points
+        FROM
+            user_info ui
+                LEFT JOIN user_auth ua ON ui.uid = ua.uid
+                LEFT JOIN user_points up ON ui.uid = up.uid
+        WHERE
+            ui.uid = #{uid}
+    </select>
+</mapper>

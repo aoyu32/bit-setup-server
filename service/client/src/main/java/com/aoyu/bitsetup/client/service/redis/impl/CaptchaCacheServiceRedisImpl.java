@@ -1,4 +1,4 @@
-package com.aoyu.bitsetup.client.service.user.impl;
+package com.aoyu.bitsetup.client.service.redis.impl;
 
 import com.anji.captcha.service.CaptchaCacheService;
 import org.springframework.data.redis.core.StringRedisTemplate;

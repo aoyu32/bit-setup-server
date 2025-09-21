@@ -1,5 +1,6 @@
 package com.aoyu.bitsetup.client.mapper.user;
 
+import com.aoyu.bitsetup.model.dto.user.UserInfoDTO;
 import com.aoyu.bitsetup.model.entity.user.UserAuth;
 import com.aoyu.bitsetup.model.entity.user.UserInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -25,5 +26,6 @@ public interface UserAuthMapper extends BaseMapper<UserAuth> {
      */
     @Select("select count(*)>0 from user_auth where email = #{email} and is_deleted = 0")
     Boolean existUserByEmail(String email);
+
 
 }

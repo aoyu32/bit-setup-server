@@ -1,7 +1,9 @@
 package com.aoyu.bitsetup.client.service.user;
 
+import com.aoyu.bitsetup.model.vo.user.UserBaseRespVO;
+import com.aoyu.bitsetup.model.vo.user.UserLoginReqVO;
 import com.aoyu.bitsetup.model.vo.user.UserRegisterReqVO;
-import com.aoyu.bitsetup.model.vo.user.UserRegisterRespVO;
+import jakarta.validation.Valid;
 
 /**
  * @InterfaceName：UserAuth
@@ -18,7 +20,7 @@ public interface UserAuthService {
      * @param:
      * @return:
      */
-    UserRegisterRespVO register(UserRegisterReqVO userRegisterReqVO);
+    UserBaseRespVO register(UserRegisterReqVO userBaseReqVO);
 
     /**
      * @description: 发送验证码
@@ -30,5 +32,12 @@ public interface UserAuthService {
     void sendCode(String email);
 
 
-
+    /**
+     * @description: 用户登录
+     * @author: aoyu
+     * @date: 2025/9/21 下午4:06
+     * @param:
+     * @return:
+     */
+    UserBaseRespVO login(@Valid UserLoginReqVO userLoginReqVO);
 }

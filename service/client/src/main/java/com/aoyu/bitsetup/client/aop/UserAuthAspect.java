@@ -32,8 +32,6 @@ public class UserAuthAspect {
     @Autowired
     private CaptchaService captchaService;
 
-    @Autowired
-    private UserAuthMapper userAuthMapper;
 
     @Pointcut("@annotation(com.aoyu.bitsetup.common.annotation.Auth)")
     public void captchaPoint(){
@@ -65,13 +63,7 @@ public class UserAuthAspect {
             throw new BusinessException(ResultCode.CAPTCHA_CODE_ERROR);
         }
 
-        //校验用户是否存在
-        //查询用户
-        Boolean res = userAuthMapper.existUserByEmail(req.getAccount());
-        if(res){
-            log.error("用户已经存在");
-            throw new BusinessException(ResultCode.ACCOUNT_EXISTS);
-        }
+
 
         log.info("校验结束");
 
