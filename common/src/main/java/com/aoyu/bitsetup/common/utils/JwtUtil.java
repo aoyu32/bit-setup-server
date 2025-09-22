@@ -58,16 +58,11 @@ public class JwtUtil {
         Date expiration = new Date(now.getTime() + parseExpiration());
 
         JwtBuilder builder = Jwts.builder()
+                .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .signWith(getSecretKey(), SignatureAlgorithm.HS256);
-
-        if (claims != null && !claims.isEmpty()) {
-            builder.setClaims(claims);
-            // 重新设置subject，因为setClaims会覆盖之前的设置
-            builder.setSubject(subject);
-        }
+                .signWith(getSecretKey(), SignatureAlgorithm.HS512);
 
         return builder.compact();
     }
@@ -93,7 +88,7 @@ public class JwtUtil {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (Exception e) {
             return false;
         }
     }

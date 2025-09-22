@@ -25,7 +25,8 @@ public enum ResultCode {
     TOKEN_UN_VALID(506, "登录认证失败"),
     TOKEN_EXPIRATION(507,"认证过期"),
     PASSWORD_INVALID(508, "账号或密码错误"),
-    USER_UN_EXIST(509,"未知用户" );
+    USER_UN_EXIST(509,"未知用户" ),
+    UID_EXCEPTION(510, "用户ID错误");
 
 
 

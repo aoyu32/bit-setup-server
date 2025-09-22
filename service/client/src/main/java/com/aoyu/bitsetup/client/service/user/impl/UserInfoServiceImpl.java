@@ -34,7 +34,6 @@ public class UserInfoServiceImpl implements UserInfoService {
         UserBaseRespVO userBaseRespVO = new UserBaseRespVO();
         BeanUtils.copyProperties(userInfoDTO,userBaseRespVO);
 
-
-        return null;
+        return userBaseRespVO;
     }
 }
