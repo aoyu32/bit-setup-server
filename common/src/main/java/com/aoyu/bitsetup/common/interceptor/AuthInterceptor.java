@@ -3,6 +3,7 @@ package com.aoyu.bitsetup.common.interceptor;
 import com.aoyu.bitsetup.common.enumeration.ResultCode;
 import com.aoyu.bitsetup.common.exception.BusinessException;
 import com.aoyu.bitsetup.common.utils.JwtUtil;
+import com.aoyu.bitsetup.common.utils.ThreadLocalUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         String token = request.getHeader("Authorization");
 
         if (token == null || !token.startsWith("Bearer ")) {
+            log.info("未携带Token或Token请求头错误");
             return false; // 拦截请求
         }
 
@@ -53,6 +55,18 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         log.info("携带的Token有效");
+
+        //从token中取出uid
+        String uid = jwtUtil.getSubjectFromToken(token);
+        log.info("token中携带的uid：{}",uid);
+        try {
+            long number = Long.parseLong(uid);
+            System.out.println(number); // 输出: 12345
+            ThreadLocalUtil.set("uid",number);
+        } catch (NumberFormatException e) {
+            throw new BusinessException(ResultCode.UID_EXCEPTION);
+        }
+
 
         return true;
     }

@@ -26,7 +26,10 @@ public enum ResultCode {
     TOKEN_EXPIRATION(507,"认证过期"),
     PASSWORD_INVALID(508, "账号或密码错误"),
     USER_UN_EXIST(509,"未知用户" ),
-    UID_EXCEPTION(510, "用户ID错误");
+    UID_EXCEPTION(510, "用户ID错误"),
+    //聊天会话
+    CREATE_SESSION_ID_ERROR(511, "创建会话ID错误"),
+    EXCEPTION_CONVERSATION_ID(512, "未知会话id");
 
 
 
