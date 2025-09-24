@@ -42,6 +42,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/auth/register",
                         "/api/auth/code",
                         "/api/captcha/**"
+
                 );
 
     }

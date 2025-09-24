@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class ChatConversationRespVO {
 
-
+    private String conversationId;//会话id
+    private String title;//会话标题
 
 }

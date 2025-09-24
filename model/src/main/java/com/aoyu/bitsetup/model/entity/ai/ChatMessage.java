@@ -22,7 +22,7 @@ public class ChatMessage {
     private Long id; // 消息ID（雪花ID）
     private Long conversationId; // 会话ID，关联ai_chat_conversations.id
     private Long uid; // 用户ID，关联user_info.uid
-    private Integer messageType; // 消息类型：1-用户提问，2-AI回复，3-系统消息
+    private String messageType; // 消息类型：1-用户提问，2-AI回复，3-系统消息
     private String content; // 消息内容
     private Integer tokensUsed; // 消耗的tokens数量
     private Long modelId; // AI模型ID，关联ai_models.id（修正字段名）

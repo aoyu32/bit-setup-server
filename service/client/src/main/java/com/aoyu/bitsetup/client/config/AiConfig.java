@@ -47,4 +47,18 @@ public class AiConfig {
                 .defaultSystem("你是个全能的ai")
                 .build();
     }
+
+    @Bean
+    public ChatClient chatClientNoMemory(ChatClient.Builder chatClientBuilder){
+        String prompt =  """
+            根据以下对话内容生成一个简洁的标题（10~15个字）：
+            "%s"
+            主要根据用户的内容来生成对话标题，不是回答对话内容，不需要加用户，智能助手这些名字，不需要加第几次，总结内容生成标题即可，要合理，符合对话内容，只需返回标题内容，不要添加任何解释。
+            """;
+        return chatClientBuilder
+                .defaultSystem(prompt)
+                .defaultAdvisors(new SimpleLoggerAdvisor())
+                .build();
+
+    }
 }

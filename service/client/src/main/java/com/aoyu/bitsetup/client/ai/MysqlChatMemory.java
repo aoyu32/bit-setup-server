@@ -32,7 +32,7 @@ public class MysqlChatMemory implements ChatMemory {
     @Override
     public List<Message> get(String conversationId, int lastN) {
 
-        List<Message> chatMessages = chatMessageService.getChatMessages(conversationId, 1969732104690380801L);
+        List<Message> chatMessages = chatMessageService.getChatMessages(conversationId);
         log.info("聊天记忆：{}",chatMessages.toString());
         return chatMessages;
     }

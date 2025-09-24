@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @ClassName：ChatConversation
@@ -23,8 +24,8 @@ public class ChatConversation {
     private Integer totalMessages; // 总消息数
     private Integer totalTokens; // 总消耗tokens
     private Integer status; // 会话状态：1-活跃，2-已归档，3-已删除
-    private LocalDateTime lastMessageTime; // 最后消息时间
-    private LocalDateTime createTime; // 创建时间
-    private LocalDateTime updateTime; // 更新时间
+    private Date lastMessageTime; // 最后消息时间
+    private Date createTime; // 创建时间
+    private Date updateTime; // 更新时间
 
 }

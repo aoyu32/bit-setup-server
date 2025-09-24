@@ -1,7 +1,6 @@
 package com.aoyu.bitsetup.client.service.ai;
 
 import com.aoyu.bitsetup.model.vo.ai.ChatReqVO;
-import com.aoyu.bitsetup.model.vo.ai.ChatRespVO;
 import reactor.core.publisher.Flux;
 
 /**
@@ -14,5 +13,7 @@ import reactor.core.publisher.Flux;
 public interface ChatService {
 
     Flux<String> chat(ChatReqVO chatReqVO);
+    
+    String generateTitle(String firstMessage);
 
 }

@@ -1,5 +1,8 @@
 package com.aoyu.bitsetup.client.service.ai;
 
+import com.aoyu.bitsetup.model.entity.ai.ChatMessage;
+import com.aoyu.bitsetup.model.vo.ai.ChatConversationRespVO;
+import com.aoyu.bitsetup.model.vo.ai.ChatMessageRespVO;
 import org.springframework.ai.chat.messages.Message;
 
 import java.util.List;
@@ -14,6 +17,8 @@ public interface ChatMessageService {
 
     void saveChatMessage(String conversationId, List<Message> messages);
 
-    List<Message> getChatMessages(String conversationId, Long uid);
+    List<Message> getChatMessages(String conversationId);
+
+    List<ChatMessageRespVO> getAllByConversationId(String conversationId);
 
 }

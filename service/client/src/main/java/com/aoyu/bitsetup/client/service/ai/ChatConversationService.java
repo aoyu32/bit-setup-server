@@ -1,5 +1,9 @@
 package com.aoyu.bitsetup.client.service.ai;
 
+import com.aoyu.bitsetup.model.vo.ai.ChatConversationRespVO;
+
+import java.util.List;
+
 /**
  * @InterfaceName：ChatSessionService
  * @Author: aoyu
@@ -10,5 +14,9 @@ package com.aoyu.bitsetup.client.service.ai;
 public interface ChatConversationService {
 
     String getConversationId(Long uid);
+
+    List<ChatConversationRespVO> getAllConversationId(Long uid);
+
+    void updateTitle (Long uid, String title);
 
 }
