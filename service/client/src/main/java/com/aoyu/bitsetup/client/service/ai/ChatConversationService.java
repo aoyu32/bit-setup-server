@@ -19,4 +19,6 @@ public interface ChatConversationService {
 
     void updateTitle (Long uid, String title);
 
+    void deleteConversation(String correlationId);
+
 }

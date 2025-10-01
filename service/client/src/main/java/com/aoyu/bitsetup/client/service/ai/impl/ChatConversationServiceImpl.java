@@ -8,9 +8,9 @@ import com.aoyu.bitsetup.common.utils.UUIDUtil;
 import com.aoyu.bitsetup.model.entity.ai.ChatConversation;
 import com.aoyu.bitsetup.model.vo.ai.ChatConversationRespVO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +56,7 @@ public class ChatConversationServiceImpl implements ChatConversationService {
         LambdaQueryWrapper<ChatConversation> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ChatConversation::getUid, uid).
                 eq(ChatConversation::getStatus, 1)
-                .orderByAsc(ChatConversation::getCreateTime);
+                .orderByDesc(ChatConversation::getCreateTime);
         List<ChatConversation> chatConversations = chatConversationMapper.selectList(queryWrapper);
         return chatConversations.stream().map(chatConversation -> {
             ChatConversationRespVO chatConversationRespVO = new ChatConversationRespVO();
@@ -75,6 +75,23 @@ public class ChatConversationServiceImpl implements ChatConversationService {
         ChatConversation chatConversation = new ChatConversation();
         chatConversation.setTitle(title);
         chatConversationMapper.update(chatConversation, lambdaQueryWrapper);
+    }
+
+    @Override
+    public void deleteConversation(String correlationId) {
+
+        LambdaUpdateWrapper<ChatConversation> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        //解析id
+        Long parsedConversationId = UUIDUtil.parseUUID(correlationId);
+        lambdaUpdateWrapper.eq(ChatConversation::getId, parsedConversationId)
+                .eq(ChatConversation::getStatus, 1)
+                .set(ChatConversation::getStatus, 0);
+        int res = chatConversationMapper.update(null,lambdaUpdateWrapper);
+        if (res == 0) {
+            throw new BusinessException(ResultCode.UPDATE_CONVERSATION_STATUS_ERROR);
+        }
+
+
     }
 
 }

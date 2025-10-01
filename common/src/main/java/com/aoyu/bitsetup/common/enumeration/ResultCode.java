@@ -29,7 +29,8 @@ public enum ResultCode {
     UID_EXCEPTION(510, "用户ID错误"),
     //聊天会话
     CREATE_SESSION_ID_ERROR(511, "创建会话ID错误"),
-    EXCEPTION_CONVERSATION_ID(512, "未知会话id");
+    EXCEPTION_CONVERSATION_ID(512, "未知会话id"),
+    UPDATE_CONVERSATION_STATUS_ERROR(513, "删除聊天会话失败");
 
 
 

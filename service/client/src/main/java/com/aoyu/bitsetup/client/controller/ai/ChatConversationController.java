@@ -8,10 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -48,5 +45,12 @@ public class ChatConversationController {
         return Result.success(allConversationId);
     }
 
+    @Operation(description = "删除会话")
+    @PostMapping("/delete/{conversationId}")
+    public Result<?> deleteConversationById(@PathVariable  String conversationId){
+        log.info("删除会话id为{}的会话",conversationId);
+        chatConversationService.deleteConversation(conversationId);
+        return Result.success();
+    }
 
 }
