@@ -32,10 +32,10 @@ public class UserInfoController {
 
     @Operation(description = "获取用户基础信息")
     @GetMapping("/base")
-    public Result<UserBaseRespVO> getBaseInfo(){
+    public Result<UserInfoDTO> getBaseInfo(){
         log.info("获取用户uid为：{}基本信息", ThreadLocalUtil.get("uid"));
-        UserBaseRespVO baseInfo = userInfoService.getBaseInfo((Long)ThreadLocalUtil.get("uid"));
-        return Result.success(baseInfo);
+        UserInfoDTO userInfoDTO = userInfoService.getBaseInfo((Long)ThreadLocalUtil.get("uid"));
+        return Result.success(userInfoDTO);
     }
 
 }

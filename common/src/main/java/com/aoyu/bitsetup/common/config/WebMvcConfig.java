@@ -41,7 +41,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/auth/login",
                         "/api/auth/register",
                         "/api/auth/code",
-                        "/api/captcha/**"
+                        "/api/captcha/**",
+                        "/api/post/hot",
+                        "/api/post/recommend",
+                        "/api/post/detail/**",
+                        "/api/post/list/**"
 
                 );
 

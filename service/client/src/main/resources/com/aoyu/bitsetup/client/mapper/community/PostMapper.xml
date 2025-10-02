@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aoyu.bitsetup.client.mapper.community.PostMapper">
+
+    <resultMap id="UserBaseInfoMap" type="com.aoyu.bitsetup.model.dto.user.UserBaseInfoDTO">
+        <result property="uid" column="uid" />
+        <result property="nickname" column="nickname" />
+        <result property="avatar" column="avatar" />
+        <result property="level" column="level" />
+        <result property="levelTitle" column="level_title" />
+        <result property="role" column="role" />
+    </resultMap>
+
+    <resultMap id="PostInfoMap" type="com.aoyu.bitsetup.model.dto.community.PostInfoDTO">
+        <result property="title" column="title" />
+        <result property="pid" column="id" />
+        <result property="summary" column="summary" />
+        <result property="publishTime" column="publish_time" jdbcType="TIMESTAMP" />
+        <result property="likeCount" column="like_count" />
+        <result property="commentCount" column="comment_count" />
+        <result property="viewCount" column="view_count" />
+        <result property="collectCount" column="collect_count" />
+        <result property="category" column="category_name" />
+        <association property="user" javaType="com.aoyu.bitsetup.model.dto.user.UserBaseInfoDTO" resultMap="UserBaseInfoMap" />
+        <collection property="images" ofType="java.lang.String" column="{postId=id}" select="getPostImages" />
+    </resultMap>
+
+
+    <select id="getPostImages" resultType="string">
+        SELECT image_url
+        FROM community_post_image
+        WHERE post_id = #{postId} AND status = 1
+        ORDER BY `sort`
+    </select>
+
+    <select id="selectPostListByCategory" resultMap="PostInfoMap">
+        SELECT
+        p.id,
+        p.uid,
+        p.title,
+        p.summary,
+        p.publish_time,
+        ui.nickname,
+        ui.avatar,
+        ui.level,
+        ui.level_title,
+        ua.role,
+        cc.name AS category_name,
+        (SELECT COUNT(1) FROM community_like cl WHERE cl.post_id = p.id AND cl.status = 1) AS like_count,
+        (SELECT COUNT(1) FROM community_comment com WHERE com.post_id = p.id AND com.status = 1) AS comment_count,
+        (SELECT COUNT(1) FROM community_view cv WHERE cv.post_id = p.id AND cv.status = 1) AS view_count,
+        (SELECT COUNT(1) FROM community_collect col WHERE col.post_id = p.id AND col.status = 1) AS collect_count
+        FROM community_post p
+        LEFT JOIN user_info ui ON p.uid = ui.uid
+        LEFT JOIN user_auth ua ON ui.uid = ua.uid AND ua.status = 1
+        LEFT JOIN community_category cc ON p.category_id = cc.id AND cc.status = 1
+        WHERE p.status = 1
+        <if test="categoryId != null and categoryId != 0">
+            AND p.category_id = #{categoryId}
+        </if>
+        ORDER BY p.is_top DESC, p.publish_time DESC
+    </select>
+
+
+    <resultMap id="PostDetailMap" type="com.aoyu.bitsetup.model.dto.community.PostDetailDTO">
+        <id property="pid" column="pid"/>
+        <result property="uid" column="uid"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="content" column="content"/>
+        <result property="category" column="category_name"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="collectCount" column="collect_count"/>
+        <collection property="images" ofType="string" column="pid" select="selectImagesByPostId"/>
+    </resultMap>
+
+    <select id="selectPostDetailByPostId" resultMap="PostDetailMap">
+        SELECT
+            p.id AS pid,
+            p.uid,
+            p.title,
+            p.summary,
+            p.content,
+            c.name AS category_name,
+            p.publish_time,
+            (SELECT COUNT(*) FROM community_like l WHERE l.post_id = p.id AND l.status = 1) AS like_count,
+            (SELECT COUNT(*) FROM community_comment com WHERE com.post_id = p.id AND com.status = 1) AS comment_count,
+            (SELECT COUNT(*) FROM community_view v WHERE v.post_id = p.id AND v.status = 1) AS view_count,
+            (SELECT COUNT(*) FROM community_collect col WHERE col.post_id = p.id AND col.status = 1) AS collect_count
+        FROM community_post p
+                 LEFT JOIN community_category c ON p.category_id = c.id
+        WHERE p.id = #{id} AND p.status = 1
+    </select>
+
+    <select id="selectImagesByPostId" resultType="string">
+        SELECT image_url
+        FROM community_post_image
+        WHERE post_id = #{postId} AND status = 1
+        ORDER BY sort ASC
+    </select>
+
+    <select id="selectHotPost" resultType="com.aoyu.bitsetup.model.dto.community.PostHotDTO">
+        SELECT
+            cp.id AS pid,
+            cp.title,
+            cc.name AS category,
+            COUNT(cv.id) AS viewCount
+        FROM community_post cp
+                 LEFT JOIN community_category cc ON cp.category_id = cc.id AND cc.status = 1
+                 LEFT JOIN community_view cv ON cp.id = cv.post_id AND cv.status = 1
+        WHERE cp.status = 1
+        GROUP BY cp.id, cp.title, cc.name
+        ORDER BY viewCount DESC
+            LIMIT 10
+    </select>
+
+    <select id="selectRecommendPost" resultType="com.aoyu.bitsetup.model.dto.community.PostRecommendDTO">
+        SELECT
+            cp.id AS pid,
+            cp.title,
+            cc.name AS category
+        FROM community_post cp
+                 LEFT JOIN community_category cc ON cp.category_id = cc.id AND cc.status = 1
+        WHERE cp.status = 1 AND cp.is_recommend = 1
+        ORDER BY cp.publish_time DESC
+    </select>
+</mapper>

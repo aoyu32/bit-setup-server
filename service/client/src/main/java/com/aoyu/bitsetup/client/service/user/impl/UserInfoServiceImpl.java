@@ -24,16 +24,16 @@ public class UserInfoServiceImpl implements UserInfoService {
     private UserInfoMapper userInfoMapper;
 
     @Override
-    public UserBaseRespVO getBaseInfo(Long userId) {
+    public UserInfoDTO getBaseInfo(Long userId) {
 
 
         UserInfoDTO userInfoDTO = userInfoMapper.selectBaseInfoById(userId);
         if(userInfoDTO == null) {
             throw new BusinessException(ResultCode.USER_UN_EXIST);
         }
-        UserBaseRespVO userBaseRespVO = new UserBaseRespVO();
-        BeanUtils.copyProperties(userInfoDTO,userBaseRespVO);
+//        UserBaseRespVO userBaseRespVO = new UserBaseRespVO();
+//        BeanUtils.copyProperties(userInfoDTO,userBaseRespVO);
 
-        return userBaseRespVO;
+        return userInfoDTO;
     }
 }

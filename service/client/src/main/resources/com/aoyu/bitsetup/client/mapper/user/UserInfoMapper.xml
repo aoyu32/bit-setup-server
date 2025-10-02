@@ -5,30 +5,39 @@
     <select id="selectBaseInfoById" parameterType="java.lang.Long" resultType="com.aoyu.bitsetup.model.dto.user.UserInfoDTO">
         SELECT
             ui.uid,
---             ua.email,
---             ua.phone,
+            ua.email,
+            ua.phone,
             ua.role,
             ui.nickname,
             ui.avatar,
-            ua.last_login_time,
-            ua.access_ip,
---             ui.gender,
---             ui.register_time AS registerTime,
---             ui.bio,
---             ui.occupation,
---             ui.level,
---             ui.level_title AS levelTitle,
---             ui.is_developer AS isDeveloper,
---             ui.experience,
---             ui.province,
---             ui.city,
---             ui.county,
-            up.available_points AS points
+            ui.gender,
+            ui.register_time AS registerTime,
+            ua.last_login_time AS lastLoginTime,
+            ua.access_ip AS accessIp,
+            ui.bio,
+            ui.occupation,
+            ui.level,
+            ui.level_title AS levelTitle,
+            ui.is_developer AS isDeveloper,
+            ui.experience,
+            ui.province,
+            ui.city,
+            ui.county,
+            up.available_points AS points,
+            (SELECT COUNT(*) FROM community_post cp WHERE cp.uid = ui.uid AND cp.status = 1) AS postCount,
+            0 AS viewCount,
+            (SELECT COUNT(*) FROM community_comment_like ccl
+                                      INNER JOIN community_comment cc ON ccl.comment_id = cc.id
+             WHERE cc.uid = ui.uid AND cc.status = 1 AND ccl.status = 1) AS likeCount,
+            (SELECT COUNT(*) FROM community_comment cc WHERE cc.uid = ui.uid AND cc.status = 1) AS commentCount,
+            (SELECT COUNT(*) FROM user_relation ur WHERE ur.uid = ui.uid AND ur.relation_type = 1 AND ur.status = 1) AS followCount,
+            (SELECT COUNT(*) FROM user_relation ur WHERE ur.following_uid = ui.uid AND ur.relation_type = 1 AND ur.status = 1) AS fansCount
         FROM
             user_info ui
                 LEFT JOIN user_auth ua ON ui.uid = ua.uid
                 LEFT JOIN user_points up ON ui.uid = up.uid
         WHERE
-            ui.uid = #{uid}
+            ui.uid = #{uid} AND ua.status = 1 AND ua.is_deleted = 0
     </select>
+
 </mapper>

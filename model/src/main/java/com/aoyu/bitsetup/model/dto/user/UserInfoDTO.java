@@ -1,6 +1,8 @@
 package com.aoyu.bitsetup.model.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.util.Date;
@@ -14,6 +16,7 @@ import java.util.Date;
 @Data
 public class UserInfoDTO {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long uid; // 用户id（雪花算法，业务使用）
     private String email; // 邮箱
     private String phone; // 手机号

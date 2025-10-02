@@ -1,5 +1,6 @@
 package com.aoyu.bitsetup.client.service.user;
 
+import com.aoyu.bitsetup.model.dto.user.UserInfoDTO;
 import com.aoyu.bitsetup.model.vo.user.UserBaseRespVO;
 
 /**
@@ -19,7 +20,7 @@ public interface UserInfoService {
      * @param:
      * @return:
      */
-   UserBaseRespVO getBaseInfo(Long uid);
+   UserInfoDTO getBaseInfo(Long uid);
 
 
 }

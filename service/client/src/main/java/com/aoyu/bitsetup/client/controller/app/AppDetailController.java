@@ -51,6 +51,7 @@ public class AppDetailController {
         return Result.success(appRelatedById);
 
     }
+
     @GetMapping("/guess")
     @Operation(description = "获取猜你喜欢应用")
     public Result<List<AppGuessLikeDTO>> getGuessLike() {
