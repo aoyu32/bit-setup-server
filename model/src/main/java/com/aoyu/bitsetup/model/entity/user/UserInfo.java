@@ -35,7 +35,7 @@ public class UserInfo {
 
     private String bio; // 个人简介
 
-    private String occupation; // 职业
+    private String career; // 职业
 
     private Integer level; // 用户等级
 

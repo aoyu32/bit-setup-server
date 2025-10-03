@@ -30,7 +30,7 @@ public class UserInfoDTO {
     private Date lastLoginTime;//上一次登录时间
     private String accessIp;//上一次登录IP
     private String bio; // 个人简介
-    private String occupation; // 职业
+    private String career; // 职业
     private Integer level; // 用户等级
     private String levelTitle; // 等级称号
     private Integer isDeveloper; // 是否开发者认证

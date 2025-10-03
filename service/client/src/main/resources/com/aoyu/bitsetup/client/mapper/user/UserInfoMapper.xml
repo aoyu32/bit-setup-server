@@ -15,7 +15,7 @@
             ua.last_login_time AS lastLoginTime,
             ua.access_ip AS accessIp,
             ui.bio,
-            ui.occupation,
+            ui.career,
             ui.level,
             ui.level_title AS levelTitle,
             ui.is_developer AS isDeveloper,

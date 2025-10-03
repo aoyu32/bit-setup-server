@@ -2,6 +2,8 @@ package com.aoyu.bitsetup.client.service.user;
 
 import com.aoyu.bitsetup.model.dto.user.UserInfoDTO;
 import com.aoyu.bitsetup.model.vo.user.UserBaseRespVO;
+import com.aoyu.bitsetup.model.vo.user.UserUpdateReqVO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @InterfaceName：UserInfoService
@@ -21,6 +23,10 @@ public interface UserInfoService {
      * @return:
      */
    UserInfoDTO getBaseInfo(Long uid);
+
+   void updateBaseInfo(UserUpdateReqVO userUpdateReqVO);
+
+   String uploadAvatar(MultipartFile file,String uid);
 
 
 }
