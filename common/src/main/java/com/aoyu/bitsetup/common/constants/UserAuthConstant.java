@@ -18,4 +18,6 @@ public class UserAuthConstant {
 
     public static final String DEFAULT_AVATAR = "http://localhost:9000/bit-setup/app/default/default-avatar.png";
 
+    public static final String USER_DELETED_PREFIX = "deleted::";
+
 }

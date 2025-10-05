@@ -4,7 +4,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/bit_setup_server?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/bit_setup_server?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8
     username: root
     password: aoyu
   devtools:
@@ -97,3 +97,6 @@ minio:
   secret-key: minioadmin
   bucket-name: bit-setup
   secure: false
+
+ip:
+  ip_platform: https://whois.pconline.com.cn/ipJson.jsp

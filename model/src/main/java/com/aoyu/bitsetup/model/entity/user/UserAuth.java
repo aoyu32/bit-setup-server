@@ -44,10 +44,6 @@ public class UserAuth {
 
     private Integer status; // 账号状态：0-禁用，1-正常，2-注销
 
-    private Date lastLoginTime; // 最近一次登录时间
-
-    private String accessIp; // 访问ip
-
     private Integer isDeleted; // 是否逻辑删除
 
     private Date createTime; // 记录创建时间

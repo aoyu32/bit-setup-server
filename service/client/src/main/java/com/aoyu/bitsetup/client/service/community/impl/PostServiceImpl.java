@@ -1,5 +1,6 @@
 package com.aoyu.bitsetup.client.service.community.impl;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.aoyu.bitsetup.client.mapper.community.PostCategoryMapper;
 import com.aoyu.bitsetup.client.mapper.community.PostImageMapper;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -76,7 +78,7 @@ public class PostServiceImpl implements PostService {
         post.setUid(postPutReqVO.getUid());
         post.setCategoryId(postCategory.getId());
         post.setTitle(postPutReqVO.getTitle());
-        post.setPublishTime(DateUtil.date());
+        post.setPublishTime(new Date());
         post.setSummary(postPutReqVO.getSummary());
         post.setContent(postPutReqVO.getContent());
 

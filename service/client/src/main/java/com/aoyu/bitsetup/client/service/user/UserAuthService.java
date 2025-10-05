@@ -1,9 +1,10 @@
 package com.aoyu.bitsetup.client.service.user;
 
-import com.aoyu.bitsetup.model.vo.user.UserBaseRespVO;
-import com.aoyu.bitsetup.model.vo.user.UserLoginReqVO;
-import com.aoyu.bitsetup.model.vo.user.UserRegisterReqVO;
+import com.aoyu.bitsetup.model.vo.user.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+
+import java.util.Map;
 
 /**
  * @InterfaceName：UserAuth
@@ -20,7 +21,7 @@ public interface UserAuthService {
      * @param:
      * @return:
      */
-    UserBaseRespVO register(UserRegisterReqVO userBaseReqVO);
+    UserBaseRespVO register(UserRegisterReqVO userBaseReqVO,HttpServletRequest httpServletRequest);
 
     /**
      * @description: 发送验证码
@@ -39,5 +40,15 @@ public interface UserAuthService {
      * @param:
      * @return:
      */
-    UserBaseRespVO login(@Valid UserLoginReqVO userLoginReqVO);
+    UserBaseRespVO login(@Valid UserLoginReqVO userLoginReqVO, HttpServletRequest httpServletRequest);
+
+    Map<String,UserLoginInfoRespVO> loginInfo(Long uid);
+
+    void updateEmail(UserUpdateEmailReqVO updateEmailReqVO);
+
+    void updatePassword(UserUpdatePasswordReqVO updatePasswordReqVO);
+
+    void deleteUser(UserDeleteReqVO userDeleteReqVO);
+
+    void resetPassword(UserResetPasswordReqVO userResetPasswordReqVO);
 }

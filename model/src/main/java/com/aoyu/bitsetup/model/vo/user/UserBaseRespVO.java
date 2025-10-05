@@ -22,8 +22,6 @@ public class UserBaseRespVO {
     private String nickname;
     private String avatar;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date lastLoginTime;
-    private String accessIp;
     private Integer points;
     private String role;
     private String token;

@@ -12,8 +12,6 @@
             ui.avatar,
             ui.gender,
             ui.register_time AS registerTime,
-            ua.last_login_time AS lastLoginTime,
-            ua.access_ip AS accessIp,
             ui.bio,
             ui.career,
             ui.level,

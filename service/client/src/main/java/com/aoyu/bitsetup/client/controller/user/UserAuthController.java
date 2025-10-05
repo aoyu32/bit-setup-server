@@ -1,19 +1,19 @@
 package com.aoyu.bitsetup.client.controller.user;
 
 import com.aoyu.bitsetup.client.service.user.UserAuthService;
-import com.aoyu.bitsetup.common.annotation.Auth;
 import com.aoyu.bitsetup.common.result.Result;
-import com.aoyu.bitsetup.model.vo.user.UserBaseRespVO;
-import com.aoyu.bitsetup.model.vo.user.UserLoginReqVO;
-import com.aoyu.bitsetup.model.vo.user.UserRegisterReqVO;
+import com.aoyu.bitsetup.model.vo.user.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @ClassName：UserAuthController
@@ -33,11 +33,10 @@ public class UserAuthController {
 
     @Operation(description = "用户注册")
     @PostMapping("/register")
-    public Result<UserBaseRespVO> register(@Valid @RequestBody UserRegisterReqVO userRegisterReqVO) {
+    public Result<UserBaseRespVO> register(@Valid @RequestBody UserRegisterReqVO userRegisterReqVO,HttpServletRequest httpServletRequest) {
         log.info("用户请求注册的数据：{}", userRegisterReqVO.toString());
-        UserBaseRespVO registerResult = userAuthService.register(userRegisterReqVO);
-        log.info("返回的注册结果：{}", registerResult.toString());
-        return Result.success(registerResult);
+        UserBaseRespVO register = userAuthService.register(userRegisterReqVO, httpServletRequest);
+        return Result.success(register);
     }
 
     @Operation(description = "获取验证码")
@@ -51,10 +50,50 @@ public class UserAuthController {
 
     @Operation(description = "用户登录")
     @PostMapping("/login")
-    public Result<UserBaseRespVO> login(@RequestBody @Valid UserLoginReqVO userLoginReqVO){
+    public Result<UserBaseRespVO> login(@RequestBody @Valid UserLoginReqVO userLoginReqVO, HttpServletRequest httpServletRequest){
         log.info("用户登录，账号{}",userLoginReqVO.toString());
-        UserBaseRespVO loginRespVO = userAuthService.login(userLoginReqVO);
+        UserBaseRespVO loginRespVO = userAuthService.login(userLoginReqVO,httpServletRequest);
         return Result.success(loginRespVO);
+    }
+
+    @Operation(description = "登录信息")
+    @GetMapping("/login/info")
+    public Result<?> loginInfo(@RequestParam String uid){
+        log.info("用户uid为：{}请求获取登录记录",uid);
+        Map<String, UserLoginInfoRespVO> loginMap = userAuthService.loginInfo(Long.valueOf(uid));
+        return Result.success(loginMap);
+    }
+
+    @Operation(description = "更新绑定邮箱")
+    @PostMapping("/email/update")
+    public Result<?> updateEmail(@Valid @RequestBody UserUpdateEmailReqVO updateEmailReqVO){
+        log.info("用户uid为：{}请求更新邮箱",updateEmailReqVO.getUid());
+        userAuthService.updateEmail(updateEmailReqVO);
+        return Result.success();
+    }
+
+    @Operation(description = "更新密码")
+    @PostMapping("/pwd/update")
+    public Result<?> updatePassword(@Valid @RequestBody UserUpdatePasswordReqVO updatePasswordReqVO){
+        log.info("用户uid为：{}请求更新密码",updatePasswordReqVO.getUid());
+        userAuthService.updatePassword(updatePasswordReqVO);
+        return Result.success();
+    }
+
+    @Operation(description = "注销账号")
+    @PostMapping("/account/delete")
+    public Result<?> deleteAccount(@RequestBody UserDeleteReqVO userDeleteReqVO){
+        log.info("用户uid为：{}请求注销账号",userDeleteReqVO.getUid());
+        userAuthService.deleteUser(userDeleteReqVO);
+        return Result.success();
+    }
+
+    @Operation(description = "用户重置密码")
+    @PostMapping("/reset")
+    public Result<?> reset(@Valid @RequestBody UserResetPasswordReqVO userResetPasswordReqVO) {
+        log.info("用户请求重置密码的数据：{}", userResetPasswordReqVO.toString());
+        userAuthService.resetPassword(userResetPasswordReqVO);
+        return Result.success();
     }
 
 

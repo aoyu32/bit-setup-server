@@ -26,9 +26,6 @@ public class UserInfoDTO {
     private Integer gender; // 性别：0-未知，1-男，2-女
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date registerTime; // 注册时间
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date lastLoginTime;//上一次登录时间
-    private String accessIp;//上一次登录IP
     private String bio; // 个人简介
     private String career; // 职业
     private Integer level; // 用户等级
