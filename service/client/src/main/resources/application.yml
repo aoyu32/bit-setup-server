@@ -42,6 +42,10 @@ spring:
         options:
           model: gemini-2.5-flash
           temperature: 0.7
+  servlet:
+    multipart:
+      max-file-size: 500MB       # 单个文件最大限制
+      max-request-size: 1000MB   # 总上传请求大小限制（可比单文件大）
 
 
 mybatis-plus:
@@ -100,3 +104,4 @@ minio:
 
 ip:
   ip_platform: https://whois.pconline.com.cn/ipJson.jsp
+

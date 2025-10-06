@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class AppSearchQueryVO {
 
+    private Long uid;
     private String keyword;
     private Integer sortType;
     private String size;

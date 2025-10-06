@@ -35,7 +35,7 @@
                 LEFT JOIN user_auth ua ON ui.uid = ua.uid
                 LEFT JOIN user_points up ON ui.uid = up.uid
         WHERE
-            ui.uid = #{uid} AND ua.status = 1 AND ua.is_deleted = 0
+            ui.uid = #{uid}
     </select>
 
 </mapper>

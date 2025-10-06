@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aoyu.bitsetup.client.mapper.submit.AppSubmitMapper">
+
+    <!-- 公共字段SQL片段 -->
+    <sql id="BaseSubmitColumns">
+        s.id,
+        s.uid,
+        s.app_name,
+        s.brief,
+        s.download_url,
+        s.official_website,
+        s.category_id,
+        c.parent_id AS parent_category_id,
+        s.file_size,
+        s.version,
+        s.is_draft,
+        s.pricing_model
+    </sql>
+    <delete id="deleteScreenshots">
+        DELETE FROM app_submit_screenshot
+        WHERE submission_id = #{submissionId}  <!-- ✅ 直接使用参数 -->
+    </delete>
+
+    <!-- Dev草稿resultMap -->
+    <resultMap id="DevelopSubmitDraftResultMap" type="com.aoyu.bitsetup.model.dto.submit.DevelopSubmitDraftDTO">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="appName" column="app_name"/>
+        <result property="bio" column="brief"/>
+        <result property="downloadUrl" column="download_url"/>
+        <result property="officialUrl" column="official_website"/>
+        <result property="primaryCategory" column="parent_category_id"/>
+        <result property="secondaryCategory" column="category_id"/>
+        <result property="size" column="file_size"/>
+        <result property="version" column="version"/>
+        <result property="isDraft" column="is_draft"/>
+        <result property="feeType" column="pricing_model"/>
+        <result property="iconUrl" column="icon_url"/>
+        <collection property="screenshots" ofType="java.lang.String" column="id" select="selectScreenshotUrlsBySubmissionId"/>
+        <collection property="files" ofType="java.lang.String" column="id" select="selectFileUrlsBySubmissionId"/>
+    </resultMap>
+
+    <!-- Recommend草稿resultMap -->
+    <resultMap id="RecommendSubmitDraftResultMap" type="com.aoyu.bitsetup.model.dto.submit.RecommendSubmitDraftDTO">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="appName" column="app_name"/>
+        <result property="bio" column="brief"/>
+        <result property="downloadUrl" column="download_url"/>
+        <result property="officialUrl" column="official_website"/>
+        <result property="primaryCategory" column="parent_category_id"/>
+        <result property="secondaryCategory" column="category_id"/>
+        <result property="size" column="file_size"/>
+        <result property="version" column="version"/>
+        <result property="isDraft" column="is_draft"/>
+        <result property="feeType" column="pricing_model"/>
+        <collection property="screenshots" ofType="java.lang.String" column="id" select="selectScreenshotUrlsBySubmissionId"/>
+        <!-- Recommend不需要files和iconUrl -->
+    </resultMap>
+
+    <!-- 查询Dev草稿 -->
+    <select id="selectDevelopSubmit" resultMap="DevelopSubmitDraftResultMap" parameterType="long">
+        SELECT <include refid="BaseSubmitColumns"/>, s.icon_url
+        FROM app_submit s
+        LEFT JOIN app_category c ON s.category_id = c.id
+        WHERE s.uid = #{uid} AND s.is_draft = 1 AND s.is_personal_develop = 1
+        LIMIT 1
+    </select>
+
+    <!-- 查询Recommend草稿 -->
+    <select id="selectRecommendSubmit" resultMap="RecommendSubmitDraftResultMap" parameterType="long">
+        SELECT <include refid="BaseSubmitColumns"/>
+        FROM app_submit s
+        LEFT JOIN app_category c ON s.category_id = c.id
+        WHERE s.uid = #{uid} AND s.is_draft = 1 AND s.is_personal_develop = 0
+        LIMIT 1
+    </select>
+
+    <!-- 查询截图URL -->
+    <select id="selectScreenshotUrlsBySubmissionId" resultType="java.lang.String" parameterType="long">
+        SELECT image_url
+        FROM app_submit_screenshot
+        WHERE submission_id = #{id} AND is_deleted = 0
+        ORDER BY sort_order ASC
+    </select>
+
+    <!-- 查询文件URL -->
+    <select id="selectFileUrlsBySubmissionId" resultType="java.lang.String" parameterType="long">
+        SELECT file_url
+        FROM app_submit_file
+        WHERE submission_id = #{id} AND is_deleted = 0
+        ORDER BY create_time ASC
+    </select>
+
+
+
+</mapper>

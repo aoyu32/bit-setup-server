@@ -39,7 +39,9 @@ public enum ResultCode {
     ORIGINAL_PASSWORD_INVALID(519, "原密码错误"),
     NOT_AGREE_AGREEMENTS(520, "未同意注销条款"),
     ACCOUNT_DELETE_ERROR(521, "用户注销错误"),
-    UPDATE_PASSWORD_ERROR(522, "密码修改错误");
+    UPDATE_PASSWORD_ERROR(522, "密码修改错误"),
+    SUBMIT_ERROR(523, "提交应用出错啦"),
+    UNKNOWN_SUBMIT_TYPE(524,"未知投稿类型");
 
 
     private final int code;

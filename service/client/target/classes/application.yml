@@ -4,7 +4,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/bit_setup_server?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/bit_setup_server?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8
     username: root
     password: aoyu
   devtools:
@@ -42,6 +42,10 @@ spring:
         options:
           model: gemini-2.5-flash
           temperature: 0.7
+  servlet:
+    multipart:
+      max-file-size: 500MB       # 单个文件最大限制
+      max-request-size: 1000MB   # 总上传请求大小限制（可比单文件大）
 
 
 mybatis-plus:
@@ -97,3 +101,7 @@ minio:
   secret-key: minioadmin
   bucket-name: bit-setup
   secure: false
+
+ip:
+  ip_platform: https://whois.pconline.com.cn/ipJson.jsp
+

@@ -146,6 +146,7 @@ public class PostServiceImpl implements PostService {
         UserInfoDTO userInfoDTO = userInfoMapper.selectBaseInfoById(postDetailDTO.getUid());
         PostDetailRespVO postDetailRespVO = new PostDetailRespVO();
         UserDetailInfoDTO userDetailInfoDTO = new UserDetailInfoDTO();
+        log.info("查询帖子的用户{}",userInfoDTO.getUid());
         BeanUtils.copyProperties(userInfoDTO, userDetailInfoDTO);
         postDetailRespVO.setUser(userDetailInfoDTO);
         postDetailRespVO.setPost(postDetailDTO);
