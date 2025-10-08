@@ -47,7 +47,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/post/recommend",
                         "/api/post/detail/**",
                         "/api/post/list/**",
-                        "/api/auth/reset"
+                        "/api/auth/reset",
+                        "/api/comment/app/list/**",
+                        "/api/comment/community/list/**"
 
                 );
 

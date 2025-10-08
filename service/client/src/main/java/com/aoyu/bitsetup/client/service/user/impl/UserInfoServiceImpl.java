@@ -5,17 +5,27 @@ import com.aoyu.bitsetup.client.service.user.UserInfoService;
 import com.aoyu.bitsetup.common.enumeration.ResultCode;
 import com.aoyu.bitsetup.common.exception.BusinessException;
 import com.aoyu.bitsetup.common.utils.MinioUtil;
+import com.aoyu.bitsetup.model.dto.user.UserBaseInfoDTO;
 import com.aoyu.bitsetup.model.dto.user.UserInfoDTO;
 import com.aoyu.bitsetup.model.entity.user.UserInfo;
 import com.aoyu.bitsetup.model.vo.user.UserBaseRespVO;
 import com.aoyu.bitsetup.model.vo.user.UserUpdateReqVO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName：UserInfoServiceImpl
@@ -90,5 +100,39 @@ public class UserInfoServiceImpl implements UserInfoService {
         return minioUtil.uploadFileToFolder(file, path, true);
     }
 
+    @Override
+    public Map<Long, UserBaseInfoDTO> getUserBaseInfoMap(Set<Long> userIds) {
+        if (CollectionUtils.isEmpty(userIds)) {
+            return new HashMap<>();
+        }
 
+        LambdaQueryWrapper<UserInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(UserInfo::getUid, userIds);
+
+        List<UserInfo> userInfos = userInfoMapper.selectList(wrapper);
+
+        return userInfos.stream()
+                .map(this::convertToUserBaseInfoDTO)
+                .collect(Collectors.toMap(UserBaseInfoDTO::getUid, Function.identity()));
+    }
+
+    private UserBaseInfoDTO convertToUserBaseInfoDTO(UserInfo userInfo) {
+        UserBaseInfoDTO dto = new UserBaseInfoDTO();
+        dto.setUid(userInfo.getUid());
+        dto.setNickname(userInfo.getNickname());
+        dto.setAvatar(userInfo.getAvatar());
+        dto.setLevel(userInfo.getLevel());
+        dto.setLevelTitle(userInfo.getLevelTitle());
+        // 设置角色，这里需要根据业务逻辑实现
+        dto.setRole(determineUserRole(userInfo));
+        return dto;
+    }
+
+    private String determineUserRole(UserInfo userInfo) {
+        // 根据业务逻辑确定用户角色
+        if (userInfo.getIsDeveloper() == 1) {
+            return "developer";
+        }
+        return "user";
+    }
 }
